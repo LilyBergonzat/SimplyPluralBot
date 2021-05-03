@@ -1,0 +1,1 @@
+global.APP_MAIN_COLOUR = 'A95B44';
