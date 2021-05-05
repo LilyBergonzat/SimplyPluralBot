@@ -41,9 +41,9 @@ class FrontHistoryImporting
         embed.setColor(APP_MAIN_COLOUR);
         embed.setAuthor('Front history importing', bot.user.displayAvatarURL({ dynamic: true }));
         embed.setDescription(
-            'Importing your front history from PluralKit is planned in the future, but is currently impossible ' +
-            'until APIv2 for PluralKit is finished. This feature also takes a lower priority than features unique ' +
-            'to Simply Plural.'
+            'Importing your front history to and from PluralKit is planned in the future, but is currently ' +
+            'impossible to give any front entries to or take entries from PluralKit until APIv2 for PluralKit is ' +
+            'finished. This feature also takes a lower priority than features unique to Simply Plural.'
         );
 
         return message.channel.send(embed);

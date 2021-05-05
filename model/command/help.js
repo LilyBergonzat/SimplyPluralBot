@@ -102,7 +102,7 @@ class HelpDialog
         this.stopAddingReactions = true;
 
         if (collection !== undefined && collection.size < 1) {
-            await this.postedMessage.reactions.removeAll();
+            await this.postedMessage.reactions.removeAll().catch(error => Logger.warning(error.message));
             return;
         }
 
@@ -116,7 +116,7 @@ class HelpDialog
         if (this.postedMessage === null) {
             this.postedMessage = await this.originalMessage.channel.send(this.categoriesEmbed).catch(error => Logger.warning(error.toString()));
         } else {
-            await this.postedMessage.reactions.removeAll();
+            await this.postedMessage.reactions.removeAll().catch(error => Logger.warning(error.message));
             await this.postedMessage.edit('', this.categoriesEmbed);
         }
 
@@ -125,7 +125,7 @@ class HelpDialog
         this.stopAddingReactions = false;
 
         for (let i = 0; i < this.usedEmojis.length && !this.stopAddingReactions; i++) {
-            await this.postedMessage.react(this.usedEmojis[i]);
+            await this.postedMessage.react(this.usedEmojis[i]).catch(error => Logger.warning(error.message));
         }
     }
 
@@ -134,7 +134,7 @@ class HelpDialog
      */
     async listCommands(collection) {
         this.stopAddingReactions = true;
-        await this.postedMessage.reactions.removeAll();
+        await this.postedMessage.reactions.removeAll().catch(error => Logger.warning(error.message));
 
         if (collection.size < 1) {
             this.postedMessage.edit('Timed out! You may send the command again.');
@@ -166,7 +166,7 @@ class HelpDialog
         // 5 minutes
         this.postedMessage.awaitReactions(filter, { time: 300000, max: 1 }).then(this.listCategories.bind(this)).catch(Logger.exception);
 
-        await this.postedMessage.react('↩️');
+        await this.postedMessage.react('↩️').catch(error => Logger.warning(error.message));
     }
 }
 
