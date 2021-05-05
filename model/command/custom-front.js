@@ -12,7 +12,7 @@ class CustomFront
         }
 
         this.aliases = ['custom-fronts', 'customfronts', 'customfront', 'cf'];
-        this.category = CommandCategory.FUN;
+        this.category = CommandCategory.RESOURCE;
         this.isAllowedForContext = CommandPermission.yes;
         this.description = 'Explains what "custom front" is.';
     }

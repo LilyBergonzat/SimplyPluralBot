@@ -15,7 +15,7 @@ class Clean
         this.aliases = ['clear', 'purge'];
         this.category = CommandCategory.MODERATION;
         this.isAllowedForContext = CommandPermission.isMemberMod;
-        this.description = 'Kills the bot process';
+        this.description = 'Deletes messages in a bulk.';
     }
 
     /**

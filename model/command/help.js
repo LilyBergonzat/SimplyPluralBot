@@ -24,9 +24,19 @@ class HelpDialog
         this.categoriesEmbed = new Discord.MessageEmbed();
         this.originalMessage = message;
         this.categoryCommandMapping = new Discord.Collection();
+        this.categoryColourMapping = new Discord.Collection();
         this.postedMessage = null;
         this.usedEmojis = [];
         this.stopAddingReactions = false;
+
+        this.categoriesEmbed.setColor(APP_MAIN_COLOUR);
+        this.categoriesEmbed.setFooter('Click on one of the reactions below');
+
+        for (let category of Object.values(CommandCategory)) {
+            this.categoryColourMapping.set(category, APP_MAIN_COLOUR);
+        }
+
+        this.categoryColourMapping.set(CommandCategory.RESOURCE, 'fdfd96');
     }
 
     /**
@@ -71,7 +81,16 @@ class HelpDialog
         }, '');
 
         this.categoriesEmbed.setTitle('Help command');
-        this.categoriesEmbed.setDescription(categories);
+        this.categoriesEmbed.setDescription(
+            'Spot stands for **S**imply **P**lural b**ot**. This bot is mainly used to generate changelogs and help ' +
+            'with the definition of features, so recurring questions can be answered more quickly.\n' +
+            '\n' +
+            'Commands are classified by categories because displaying every command in this small box would be ' +
+            'confusing and would break Discord\'s character limit. Click on a reaction to show the commands ' +
+            'available in the corresponding category.\n' +
+            '\n' +
+            categories
+        );
 
         return this.listCategories();
     }
@@ -139,6 +158,8 @@ class HelpDialog
 
         commandsEmbed.setTitle('Help command');
         commandsEmbed.setDescription(commands);
+        commandsEmbed.setColor(this.categoryColourMapping.get(category));
+        commandsEmbed.setFooter('Click on one of the reactions below');
 
         this.postedMessage.edit('', commandsEmbed);
 
@@ -158,7 +179,7 @@ class Help
             return Help.instance;
         }
 
-        this.aliases = [];
+        this.aliases = ['commands'];
         this.category = CommandCategory.INFO;
         this.isAllowedForContext = CommandPermission.yes;
         this.description = 'Provides the list of commands';
