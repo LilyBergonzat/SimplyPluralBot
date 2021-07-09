@@ -7,6 +7,13 @@
         "mod": ""
     },
     "channels": {
-        "staff": ""
+        "appDiscussion": ""
+    },
+    "jira": {
+        "baseUrl": "",
+        "issueTypes": {
+            "bug": 10005,
+            "task": 10002
+        }
     }
 }

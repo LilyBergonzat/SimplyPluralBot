@@ -15,22 +15,14 @@ const Guild = {
     discordGuild: null,
 
     /** {TextChannel} */
-    modsReviewChannel: null,
-
-    /** {TextChannel} */
-    speakerReviewChannel: null,
-
-    /** {TextChannel} */
-    officeChannel: null,
+    appDiscussionChannel: null,
 
     /** {Collection} */
     messagesCache: new Discord.Collection(),
 
     init: async () => {
         Guild.discordGuild = bot.guilds.cache.find(guild => guild.id === Config.guild);
-        Guild.modsReviewChannel = Guild.discordGuild.channels.cache.find(channel => channel.id === Config.channels.modsReview);
-        Guild.speakerReviewChannel = Guild.discordGuild.channels.cache.find(channel => channel.id === Config.channels.speakerReview);
-        Guild.officeChannel = Guild.discordGuild.channels.cache.find(channel => channel.id === Config.channels.office);
+        Guild.appDiscussionChannel = Guild.discordGuild.channels.cache.find(channel => channel.id === Config.channels.appDiscussion);
     },
 
     /**
@@ -164,6 +156,10 @@ const Guild = {
             certain,
             foundMembers
         };
+    },
+
+    guildMemberAddHandler: (member) => {
+        Guild.appDiscussionChannel.send(`Welcome, ${member}! Just so you are aware, we are slowly recovering from a DDoS attack. If you are having trouble connecting to the app, please make sure you are on the latest version. If you are still unable to connect, you can note your switches in <#862775075626287176> so that you have them for when the server has recovered. We thank you for your patience!`)
     }
 };
 
