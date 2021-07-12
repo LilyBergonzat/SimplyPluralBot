@@ -6,7 +6,7 @@ const Command = require('../../model/command');
 module.exports = async (message) => {
     const user = message.author;
 
-    if (!user.bot) {
+    if ((message.guild === null || isRightGuild(message.guild.id)) && !user.bot) {
         await Command.parseMessage(message);
     }
 };

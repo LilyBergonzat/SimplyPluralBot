@@ -45,6 +45,13 @@ const Guild = {
     },
 
     /**
+     * @param {GuildMember} member
+     */
+    isMemberHelper: (member) => {
+        return member !== undefined && member !== null && member.roles.cache.has(Config.roles.helper);
+    },
+
+    /**
      * @param {string} roleName
      * @returns {Role|null}
      */

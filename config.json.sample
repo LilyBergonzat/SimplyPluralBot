@@ -4,7 +4,8 @@
     "guild": "",
     "mom": "",
     "roles": {
-        "mod": ""
+        "mod": "",
+        "helper": ""
     },
     "channels": {
         "joins": ""

@@ -15,6 +15,12 @@ class EmbedDialog
         this.channel = message.channel;
         this.destinationChannel = null;
 
+        this.prompt = (question, hideSkip = false) => {
+            return this.channel.send(`${question}\n*${!hideSkip ? '`skip` to skip, ' : ''}\`cancel\` to cancel*`);
+        };
+
+        this.isMessageSkip = message => message.content.toLowerCase() === 'skip';
+
         this.messageFilter = testedMessage => {
             const byAuthor = testedMessage.author.id === message.author.id;
             const hasContent = testedMessage.cleanContent.trim().length > 0;
@@ -23,7 +29,8 @@ class EmbedDialog
         }
 
         this.channelMessageFilter = testedMessage => {
-            return this.messageFilter(testedMessage) && testedMessage.mentions.channels.size > 0;
+            return this.messageFilter(testedMessage)
+                && (this.isMessageSkip(testedMessage) || testedMessage.mentions.channels.size > 0);
         }
 
         this.returnFirstOfCollection = collection => collection && collection.size ? collection.first() : null;
@@ -53,47 +60,61 @@ class EmbedDialog
     }
 
     async execute() {
-        await this.channel.send('#️⃣ In which **channel** would you like this embed to be posted?');
+        let confirmation = true;
+
+        await this.prompt('#️⃣ In which **channel** would you like this embed to be posted?');
         const channelMessage = await this.awaitMessage(this.channelMessageFilter);
 
         if (!channelMessage) {
             return null;
         }
 
-        this.destinationChannel = channelMessage.mentions.channels.first();
-        await this.channel.send('📰 What do you want the **title** of this embed to be (you can also ping someone so it appears as they are saying what is going to be the description)?');
+        if (this.isMessageSkip(channelMessage)) {
+            this.destinationChannel = this.channel;
+            confirmation = false;
+        } else {
+            this.destinationChannel = channelMessage.mentions.channels.first();
+        }
+
+        await this.prompt('📰 What do you want the **title** of this embed to be (you can also ping someone so it appears as they are saying what is going to be the description)?');
         const titleMessage = await this.awaitMessage(this.messageFilter);
 
         if (!titleMessage) {
             return null;
         }
 
-        if (titleMessage.mentions.members.size > 0) {
-            const member = titleMessage.mentions.members.first();
-            this.embed.setAuthor(member.displayName, member.user.displayAvatarURL({ dynamic: true }));
-        } else {
-            this.embed.setTitle(titleMessage.content);
+        if (!this.isMessageSkip(titleMessage)) {
+            if (titleMessage.mentions.members.size > 0) {
+                const member = titleMessage.mentions.members.first();
+                this.embed.setAuthor(member.displayName, member.user.displayAvatarURL({dynamic: true}));
+            } else {
+                this.embed.setTitle(titleMessage.content);
+            }
         }
 
-        await this.channel.send('🎨 What do you want the **colour** of this embed to be?');
+        await this.prompt('🎨 What do you want the **colour** of this embed to be?');
         const colourMessage = await this.awaitMessage(this.messageFilter);
 
         if (!colourMessage) {
             return null;
         }
 
-        if (colourMessage.content.startsWith('#')) {
-            this.embed.setColor(parseInt(colourMessage.content.substr(1), 16));
-        } else if (colourMessage.content.startsWith('0x')) {
-            this.embed.setColor(parseInt(colourMessage.content.substr(2), 16));
-        } else if (RGB_REGEX.test(colourMessage.content)) {
-            const [, red, green, blue] = colourMessage.content.match(RGB_REGEX);
-            this.embed.setColor([parseInt(red), parseInt(green), parseInt(blue)]);
+        if (this.isMessageSkip(colourMessage)) {
+            this.embed.setColor(APP_MAIN_COLOUR);
         } else {
-            this.embed.setColor(colourMessage.content.toUpperCase().replace(/[^A-Z]+/gu, '_'));
+            if (colourMessage.content.startsWith('#')) {
+                this.embed.setColor(parseInt(colourMessage.content.substr(1), 16));
+            } else if (colourMessage.content.startsWith('0x')) {
+                this.embed.setColor(parseInt(colourMessage.content.substr(2), 16));
+            } else if (RGB_REGEX.test(colourMessage.content)) {
+                const [, red, green, blue] = colourMessage.content.match(RGB_REGEX);
+                this.embed.setColor([parseInt(red), parseInt(green), parseInt(blue)]);
+            } else {
+                this.embed.setColor(colourMessage.content.toUpperCase().replace(/[^A-Z]+/gu, '_'));
+            }
         }
 
-        await this.channel.send('💬 What do you want the **description** (contents) of this embed to be?');
+        await this.prompt('💬 What do you want the **description** (contents) of this embed to be?', true);
         const descriptionMessage = await this.awaitMessage(this.messageFilter);
 
         if (!descriptionMessage) {
@@ -103,7 +124,9 @@ class EmbedDialog
         this.embed.setDescription(descriptionMessage.content);
         await this.destinationChannel.send(this.embed);
 
-        return this.channel.send(`✅ The embed has been posted in ${this.destinationChannel}.`);
+        if (confirmation) {
+            return this.channel.send(`✅ The embed has been posted in ${this.destinationChannel}.`);
+        }
     }
 }
 
@@ -118,7 +141,7 @@ class Embed
 
         this.aliases = [];
         this.category = CommandCategory.RESOURCE;
-        this.isAllowedForContext = CommandPermission.isMemberMod;
+        this.isAllowedForContext = CommandPermission.isMemberModOrHelper;
         this.description = 'Allows to post an embed';
     }
 
@@ -127,9 +150,32 @@ class Embed
      * @param {Array} args
      */
     async process(message, args) {
-        const dialog = new EmbedDialog(message);
+        if (args.length > 0) {
+            let destinationChannel = message.channel;
+            let deleteMessage = true;
 
-        return dialog.execute();
+            if (/<#\d+>/u.test(args[0])) {
+                destinationChannel = message.mentions.channels.first();
+                args.shift();
+                deleteMessage = false;
+            }
+
+            const embed = new MessageEmbed();
+
+            embed.setColor(APP_MAIN_COLOUR);
+            embed.setDescription(args.join(' '));
+            await destinationChannel.send(embed);
+
+            if (deleteMessage) {
+                await message.delete();
+            } else {
+                await message.react('✅');
+            }
+        } else {
+            const dialog = new EmbedDialog(message);
+
+            return dialog.execute();
+        }
     }
 }
 
