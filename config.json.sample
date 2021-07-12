@@ -7,7 +7,7 @@
         "mod": ""
     },
     "channels": {
-        "appDiscussion": ""
+        "joins": ""
     },
     "jira": {
         "baseUrl": "",
