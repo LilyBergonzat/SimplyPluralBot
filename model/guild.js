@@ -166,7 +166,7 @@ const Guild = {
     },
 
     guildMemberAddHandler: (member) => {
-        Guild.joinsChannel.send(`Welcome, ${member}! Just so you are aware, we are slowly recovering from a DDoS attack. If you are having trouble connecting to the app, please make sure you are on the latest version. If you are still unable to connect, you can note your switches in <#862595352917442570> so that you have them for when the server has recovered. We thank you for your patience!`)
+        Guild.joinsChannel.send(`Welcome, ${member}! Just so you are aware, we are slowly recovering from a DDoS attack. If you are having any kind of issues, please make sure you are on the latest version. Please check <#863171642905591830> for the status of the servers before reporting any issues. If you are still unable to connect, you can note your switches in <#862595352917442570> so that you have them for when the server has recovered. We thank you for your patience!`)
     }
 };
 
