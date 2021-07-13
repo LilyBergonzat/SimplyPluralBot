@@ -55,6 +55,7 @@ const botProcess = () => {
     const { Client } = require('discord.js');
 
     global.bot = new Client({ fetchAllMembers: true });
+    global.isRightGuild = (guildSnowflake) => guildSnowflake === Config.guild;
 
     const Config = require('./config.json');
     const Command = require('./model/command');

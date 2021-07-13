@@ -15,14 +15,14 @@ const Guild = {
     discordGuild: null,
 
     /** {TextChannel} */
-    appDiscussionChannel: null,
+    joinsChannel: null,
 
     /** {Collection} */
     messagesCache: new Discord.Collection(),
 
     init: async () => {
         Guild.discordGuild = bot.guilds.cache.find(guild => guild.id === Config.guild);
-        Guild.appDiscussionChannel = Guild.discordGuild.channels.cache.find(channel => channel.id === Config.channels.appDiscussion);
+        Guild.joinsChannel = Guild.discordGuild.channels.cache.find(channel => channel.id === Config.channels.joins);
     },
 
     /**
@@ -42,6 +42,13 @@ const Guild = {
      */
     isMemberMod: (member) => {
         return member !== undefined && member !== null && member.roles.cache.has(Config.roles.mod);
+    },
+
+    /**
+     * @param {GuildMember} member
+     */
+    isMemberHelper: (member) => {
+        return member !== undefined && member !== null && member.roles.cache.has(Config.roles.helper);
     },
 
     /**
@@ -159,7 +166,7 @@ const Guild = {
     },
 
     guildMemberAddHandler: (member) => {
-        Guild.appDiscussionChannel.send(`Welcome, ${member}! Just so you are aware, we are slowly recovering from a DDoS attack. If you are having any kind of issues, please make sure you are on the latest version. Please check <#863171642905591830> for the status of the servers before reporting any issues. If you are still unable to connect, you can note your switches in <#862595352917442570> so that you have them for when the server has recovered. We thank you for your patience!`)
+        Guild.joinsChannel.send(`Welcome, ${member}! Just so you are aware, we are slowly recovering from a DDoS attack. If you are having any kind of issues, please make sure you are on the latest version. Please check <#863171642905591830> for the status of the servers before reporting any issues. If you are still unable to connect, you can note your switches in <#862595352917442570> so that you have them for when the server has recovered. We thank you for your patience!`)
     }
 };
 

@@ -4,10 +4,11 @@
     "guild": "",
     "mom": "",
     "roles": {
-        "mod": ""
+        "mod": "",
+        "helper": ""
     },
     "channels": {
-        "appDiscussion": ""
+        "joins": ""
     },
     "jira": {
         "baseUrl": "",

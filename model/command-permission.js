@@ -26,6 +26,16 @@ const CommandPermission = {
      * @param {Message} message
      * @returns {Promise.<boolean>}
      */
+    isMemberModOrHelper: async (message) => {
+        const member = await Guild.getMemberFromMessage(message);
+
+        return await CommandPermission.isMemberMod(message) || await Guild.isMemberHelper(member);
+    },
+
+    /**
+     * @param {Message} message
+     * @returns {Promise.<boolean>}
+     */
     yes: async (message) => {
         return true;
     }
