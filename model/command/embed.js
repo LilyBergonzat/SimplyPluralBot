@@ -140,7 +140,7 @@ class Embed
         }
 
         this.aliases = [];
-        this.category = CommandCategory.RESOURCE;
+        this.category = CommandCategory.MODERATION;
         this.isAllowedForContext = CommandPermission.isMemberModOrHelper;
         this.description = 'Allows to post an embed';
     }

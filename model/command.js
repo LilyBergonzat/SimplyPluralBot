@@ -3,6 +3,8 @@ const Discord = require('discord.js');
 const Config = require('../config.json');
 const Guild = require('./guild');
 
+const customMessages = require("./messages");
+
 const cachelessRequire = (path) => {
     if (typeof path === 'string') {
         delete require.cache[require.resolve(path)];
@@ -44,37 +46,32 @@ const Command = {
      * @returns {boolean}
      */
     parseMessage: async (message) => {
-        let isCommand = false;
+        if (!message.content.toLowerCase().startsWith(Config.prefix))
+            return false;
 
-        if (message.content.toLowerCase().substr(0, Config.prefix.length) === Config.prefix) {
-            let content = message.content.substr(Config.prefix.length).trim().split(' ');
-            const calledCommand = content.shift().toLowerCase();
+        let content = message.content.substr(Config.prefix.length).trim().split(' ');
+        const calledCommand = content.shift().toLowerCase();
 
-            if (await Command.isValid(calledCommand, message)) {
-                const member = await Guild.getMemberFromMessage(message);
+        if (embed = customMessages.getEmbed(calledCommand))
+            return await message.channel.send({embed});
 
-                if (member === null) {
-                    message.reply('sorry, you do not seem to be on the server.');
-                } else {
-                    let commandName = calledCommand;
-                    isCommand = true;
+        if (!await Command.isValid(calledCommand, message)) return;
+        
+        const member = await Guild.getMemberFromMessage(message);
+        if (member === null)
+            return message.reply('sorry, you do not seem to be on the server.');
 
-                    if (Command.commandAliases.hasOwnProperty(calledCommand)) {
-                        commandName = Command.commandAliases[calledCommand];
-                    }
+        let commandName = calledCommand;
 
-                    const commandInstance = cachelessRequire(Command.commandList.get(commandName));
+        if (Command.commandAliases.hasOwnProperty(calledCommand))
+            commandName = Command.commandAliases[calledCommand];
 
-                    if (commandInstance !== null) {
-                        commandInstance.process(message, content, Command);
-                    } else {
-                        Command.commandList.delete(commandName);
-                    }
-                }
-            }
-        }
+        const commandInstance = cachelessRequire(Command.commandList.get(commandName));
 
-        return isCommand;
+        if (commandInstance !== null)
+            commandInstance.process(message, content, Command);
+        else
+            Command.commandList.delete(commandName);
     },
 
     /**

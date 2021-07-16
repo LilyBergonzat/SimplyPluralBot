@@ -74,6 +74,9 @@ const botProcess = () => {
 
     Command.init();
 
+    const help = require("./model/command/help");
+    bot.ws.on('INTERACTION_CREATE', help.interactionHandler);
+
     bot.on('ready', () => {
         fs.readdirSync('./event/bot/')
             .filter(filename => filename.endsWith('.js'))
