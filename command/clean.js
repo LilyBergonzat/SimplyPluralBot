@@ -1,17 +1,11 @@
 const Logger = require('@lilywonhalf/pretty-logger');
-const Config = require('../../config.json');
-const CommandCategory = require('../command-category');
-const CommandPermission = require('../command-permission');
+const Config = require('../config.json');
+const CommandCategory = require('../model/command-category');
+const CommandPermission = require('../model/command-permission');
 
 class Clean
 {
-    static instance = null;
-
     constructor() {
-        if (Clean.instance !== null) {
-            return Clean.instance;
-        }
-
         this.aliases = ['clear', 'purge'];
         this.category = CommandCategory.MODERATION;
         this.isAllowedForContext = CommandPermission.isMemberMod;

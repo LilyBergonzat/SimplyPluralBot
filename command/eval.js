@@ -1,23 +1,17 @@
 const Discord = require('discord.js');
 const Logger = require('@lilywonhalf/pretty-logger');
-const Config = require('../../config.json');
-const CommandCategory = require('../command-category');
-const CommandPermission = require('../command-permission');
+const Config = require('../config.json');
+const CommandCategory = require('../model/command-category');
+const CommandPermission = require('../model/command-permission');
 
 // Including every model here so that it's ready to be used by the command
-const Guild = require('../guild');
+const Guild = require('../model/guild');
 
 const JAVASCRIPT_LOGO_URL = 'https://i.discord.fr/IEV8.png';
 
 class Eval
 {
-    static instance = null;
-
     constructor() {
-        if (Eval.instance !== null) {
-            return Eval.instance;
-        }
-
         this.aliases = [];
         this.category = CommandCategory.BOT_MANAGEMENT;
         this.isAllowedForContext = CommandPermission.isMommy;

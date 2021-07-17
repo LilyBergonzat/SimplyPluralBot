@@ -1,6 +1,6 @@
 const { MessageEmbed, Message } = require('discord.js');
-const CommandCategory = require('../command-category');
-const CommandPermission = require('../command-permission');
+const CommandCategory = require('../model/command-category');
+const CommandPermission = require('../model/command-permission');
 
 const RGB_REGEX = /(\d{1,3})\D*,\D*(\d{1,3})\D*,\D*(\d{1,3})\D*/u;
 

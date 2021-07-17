@@ -1,8 +1,8 @@
-const CommandPermission = require('../command-permission');
-const CommandCategory = require('../command-category');
+const CommandPermission = require('../model/command-permission');
+const CommandCategory = require('../model/command-category');
 
-const commands = require('../command').commandList;
-const messages = require('../messages');
+const commands = require('../model/command').commandList;
+const messages = require('../model/messages');
 
 const cachelessRequire = (path) => {
     if (!typeof path === 'string') {
@@ -73,7 +73,7 @@ const categoryPage = (cat, id, direct = false) => {
         data.embeds[0].fields = messages.getList();
     else
         data.embeds[0].fields = Array.from(commands.keys()).map(x => {
-            const cmd = cachelessRequire(commands.get(x).split("command/").join(""));
+            const cmd = cachelessRequire(commands.get(x));
             if (cleanString(cmd.category)?.toLowerCase() != cat.toLowerCase()) return;
             return { name: x, value: cmd.description ?? "No description."};
         }).filter(x => x);

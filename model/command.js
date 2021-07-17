@@ -21,9 +21,9 @@ const Command = {
         Command.commandList = new Discord.Collection();
         Command.commandAliases = {};
 
-        fs.readdirSync('model/command/').forEach(file => {
+        fs.readdirSync('command/').forEach(file => {
             if (file.substr(file.lastIndexOf('.')).toLowerCase() === '.js') {
-                const commandPath = `./command/${file}`;
+                const commandPath = `../command/${file}`;
                 const commandInstance = cachelessRequire(commandPath);
 
                 if (commandInstance !== null) {

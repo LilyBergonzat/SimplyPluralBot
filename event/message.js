@@ -1,4 +1,4 @@
-const Command = require('../../model/command');
+const Command = require('../model/command');
 
 /**
  * @param {Message} message

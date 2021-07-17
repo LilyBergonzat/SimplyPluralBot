@@ -1,6 +1,6 @@
 const Logger = require('@lilywonhalf/pretty-logger');
-const Config = require('../../config.json');
-const Guild = require('../../model/guild');
+const Config = require('../config.json');
+const Guild = require('../model/guild');
 
 module.exports = async () => {
     Logger.info('Logged in as ' + bot.user.username + '#' + bot.user.discriminator);

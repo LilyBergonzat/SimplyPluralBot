@@ -1,17 +1,11 @@
 const Logger = require('@lilywonhalf/pretty-logger');
-const Config = require('../../config.json');
-const CommandCategory = require('../command-category');
-const CommandPermission = require('../command-permission');
+const Config = require('../config.json');
+const CommandCategory = require('../model/command-category');
+const CommandPermission = require('../model/command-permission');
 
 class Kill
 {
-    static instance = null;
-
     constructor() {
-        if (Kill.instance !== null) {
-            return Kill.instance;
-        }
-
         this.aliases = [];
         this.category = CommandCategory.BOT_MANAGEMENT;
         this.isAllowedForContext = CommandPermission.isMemberMod;
