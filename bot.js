@@ -74,17 +74,20 @@ const botProcess = () => {
 
     Command.init();
 
+    const help = require("./command/help");
+    bot.ws.on('INTERACTION_CREATE', help.interactionHandler);
+
     bot.on('ready', () => {
-        fs.readdirSync('./event/bot/')
+        fs.readdirSync('./event/')
             .filter(filename => filename.endsWith('.js'))
             .map(filename => filename.substr(0, filename.length - 3))
             .forEach(filename => {
                 const event = filename.replace(/([_-][a-z])/gu, character => `${character.substr(1).toUpperCase()}`);
 
                 if (filename !== 'ready') {
-                    bot.on(event, require(`./event/bot/${filename}`));
+                    bot.on(event, require(`./event/${filename}`));
                 } else {
-                    require(`./event/bot/${filename}`)();
+                    require(`./event/${filename}`)();
                 }
             });
     });

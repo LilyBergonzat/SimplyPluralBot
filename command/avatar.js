@@ -1,18 +1,12 @@
 const Logger = require('@lilywonhalf/pretty-logger');
 const Discord = require('discord.js');
-const CommandCategory = require('../command-category');
-const CommandPermission = require('../command-permission');
-const Guild = require('../guild');
+const CommandCategory = require('../model/command-category');
+const CommandPermission = require('../model/command-permission');
+const Guild = require('../model/guild');
 
 class Avatar
 {
-    static instance = null;
-
     constructor() {
-        if (Avatar.instance !== null) {
-            return Avatar.instance;
-        }
-
         this.aliases = ['av'];
         this.category = CommandCategory.FUN;
         this.isAllowedForContext = CommandPermission.yes;

@@ -1,20 +1,14 @@
 const Logger = require('@lilywonhalf/pretty-logger');
-const Config = require('../../config.json');
-const CommandCategory = require('../command-category');
-const CommandPermission = require('../command-permission');
-const { search } = require('../jira');
+const Config = require('../config.json');
+const CommandCategory = require('../model/command-category');
+const CommandPermission = require('../model/command-permission');
+const { search } = require('../model/jira');
 
 const MAX_CHARACTERS = 1950;
 
 class Changelog
 {
-    static instance = null;
-
     constructor() {
-        if (Changelog.instance !== null) {
-            return Changelog.instance;
-        }
-
         this.aliases = ['change-log', 'cl'];
         this.category = CommandCategory.MODERATION;
         this.isAllowedForContext = CommandPermission.isMemberMod;
