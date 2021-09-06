@@ -13,10 +13,10 @@ const cachelessRequire = (path) => {
 };
 
 const cleanString = (str) => str === null || str === undefined ? null : str
-    .replace("_", " ")
-    .split(" ")
+    .replace('_', ' ')
+    .split(' ')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-    .join(" ");
+    .join(' ');
 
 const mainPage = (id) => {
     const buttons = Object.keys(CommandCategory).map(c => ({
@@ -28,7 +28,7 @@ const mainPage = (id) => {
 
     return {
         embeds: [{
-            title: "Help command",
+            title: 'Help command',
             color: 0xA95B44,
             description:
                 'Spot stands for **S**imply **P**lural b**ot**. This bot is mainly used to generate changelogs and help ' +
@@ -39,8 +39,8 @@ const mainPage = (id) => {
                 'available in the corresponding category, or type `.help <category name>`.\n'
         }],
         components: [{
-            "type": 1,
-            "components": buttons,
+            'type': 1,
+            'components': buttons,
         }]
     }
 
@@ -57,11 +57,11 @@ const categoryPage = (cat, id, direct = false) => {
             color: 0xA95B44,
         }],
         components: [{
-            "type": 1,
-            "components": [{
+            'type': 1,
+            'components': [{
                 type: 2,
                 style: 2,
-                label: "Back",
+                label: 'Back',
                 custom_id: `help-${id}-home`,
             }],
         }]
@@ -69,13 +69,13 @@ const categoryPage = (cat, id, direct = false) => {
 
     if (direct) delete data.components;
 
-    if (cat.toLowerCase() == cleanString(CommandCategory.RESOURCE).toLowerCase())
+    if (cat.toLowerCase() === cleanString(CommandCategory.RESOURCE).toLowerCase())
         data.embeds[0].fields = messages.getList();
     else
         data.embeds[0].fields = Array.from(commands.keys()).map(x => {
             const cmd = cachelessRequire(commands.get(x));
-            if (cleanString(cmd.category)?.toLowerCase() != cat.toLowerCase()) return;
-            return { name: x, value: cmd.description ?? "No description."};
+            if (cleanString(cmd.category)?.toLowerCase() !== cat.toLowerCase()) return;
+            return { name: x, value: cmd.description ?? 'No description.'};
         }).filter(x => x);
 
     return data;
@@ -99,11 +99,11 @@ class Help
         if (!args[0])
             await bot.api.channels(message.channel.id).messages.post({ data: mainPage(message.author.id) });
         else
-            await bot.api.channels(message.channel.id).messages.post({ 
-                data: 
-                    categoryPage(args.join(" "), message.author.id, true) 
+            await bot.api.channels(message.channel.id).messages.post({
+                data:
+                    categoryPage(args.join(' '), message.author.id, true)
                     ?? {
-                        content: "Category not found.", 
+                        content: 'Category not found.',
                         message_reference: { message_id: message.id, guild_id: message.guild?.id },
                         allowed_mentions: { parse: [] },
                     }
@@ -114,25 +114,29 @@ class Help
 module.exports = new Help();
 
 module.exports.interactionHandler = async (event) => {
-    const user = event.member.user.id;
-    const custom_id = event.data.custom_id;
+    const user = event.member ? event.member.user.id : event.user.id;
+    const customId = event.data.custom_id;
 
     let ret;
 
-    if (!custom_id.startsWith(`help-${user}`))
+    if (!customId.startsWith(`help-${user}`)) {
         ret = {
             type: 4,
             data: {
                 flags: 64,
-                content: "This help command was sent by someone else. Please run `.help` again.",
+                content: 'This help command was sent by someone else. Please run `.help` again.',
             },
         }
-    else if (custom_id.endsWith('home')) 
+    } else if (customId.endsWith('home')) {
         ret = { type: 7, data: mainPage(user) };
-    else {
-        let page = categoryPage(cleanString(custom_id.split(`help-${user}-`).join("")), user);
-        if (page) ret = { type: 7, data: page };
-        else ret = { type: 4, data: { flags: 64, content: "Category not found." }}
+    } else {
+        let page = categoryPage(cleanString(customId.split(`help-${user}-`).join('')), user);
+
+        if (page) {
+            ret = { type: 7, data: page };
+        } else {
+            ret = { type: 4, data: { flags: 64, content: 'Category not found.' }}
+        }
     }
 
     return await bot.api.interactions(event.id, event.token).callback.post({ data: ret })
