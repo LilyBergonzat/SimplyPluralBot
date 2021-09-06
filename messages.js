@@ -188,7 +188,7 @@ module.exports = [
     },
     {
         names: [
-            "system-relationsips",
+            "system-relationships",
             "system-relationship",
             "systemrelationships",
             "sr",
